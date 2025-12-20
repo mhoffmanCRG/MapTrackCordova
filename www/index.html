@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src *; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data:"> -->
+
+        <title>Add 3D terrain to a map</title>
+        <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+        <link rel="stylesheet" href="css/bootstrap5.min.css" >
+        <!-- <link rel="stylesheet" href="css/mapbox-gl.css"> -->
+        <link rel="stylesheet" href="css/mapbox-gl-v3-15-0.css">
+        <link rel="stylesheet" href="css/index.css" >
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="jsExt/jquery-3.4.1.min.js"></script>
+        <!-- <script type="text/javascript" src="jsExt/mapbox-gl.js"></script> -->
+        <!-- <script type="text/javascript" src="jsExt/mapbox-gl-offline.js"></script> -->
+        <script type="text/javascript" src="jsExt/mapbox-gl-v3-15-0-offline.js"></script>
+        <script type="text/javascript" src="jsExt/mapbox-gl-framerate.js"></script>
+        <script type="text/javascript" src="jsExt/turf.min.js"></script>
+        <script type="text/javascript" src="jsExt/mqttws31.js"></script>
+        <script type="text/javascript" src="js/gps.js"></script>
+        <script type="text/javascript" src="js/httpd.js"></script>
+        <script type="text/javascript" src="js/app.js"></script>
+        <script type="text/javascript" src="js/mqtt.js"></script>
+        <script type="text/javascript" src="js/ble.js"></script>
+<!--        <style>
+            body { margin: 0; padding: 0; }
+            #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+            .mapboxgl-ctrl-logo, ._mapboxgl-ctrl-attrib-inner { display: none !important;}
+        </style>-->
+    </head>
+    <body>
+        <div id="map"></div>
+        <nav id="listing-group" class="listing-group">
+            <!-- <button type="button" id="mapFolderBtn" class="btn btn-light">MapFolder</button>
+            <div id="mapFolders"></div> -->
+            <input type="checkbox" id="NorthBtn" checked="checked">
+            <label for="NorthBtn">North</label>
+            <input type="checkbox" id="TrackBtn" checked="checked">
+            <label for="TrackBtn">Track</label>
+            <input type="checkbox" id="TileBtn" checked="checked">
+            <label for="TileBtn">Tile</label>
+            <div id="speed"></div>
+            <div id="lat"></div>
+            <div id="lng"></div>
+            <div id="myInfoL"></div>
+        </nav>
+        
+    </body>
+    <script src="js/index.js"></script>
+</html>

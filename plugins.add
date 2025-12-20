@@ -1,0 +1,7 @@
+cordova plugin add cordova-custom-config 
+cordova plugin add cordova-plugin-android-permissions 
+cordova plugin add cordova-plugin-ble-central 
+cordova plugin add cordova-plugin-file 
+cordova plugin add cordova-plugin-gps 
+cordova plugin add cordova-plugin-httpd-cors 
+
