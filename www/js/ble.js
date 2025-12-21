@@ -8,7 +8,6 @@ document.addEventListener('deviceready', function() {
     var characteristicUUID = "abcdefab-1234-5678-1234-abcdefabcdef";
 
     function connectAndSubscribe(deviceId) {
-        ble.
         ble.connect(deviceId,
             function(peripheral) {
                 console.log("Connected to", deviceId);
@@ -30,7 +29,13 @@ document.addEventListener('deviceready', function() {
                                 try {
                                     let obj = JSON.parse(jsonString);
                                     console.log("Received JSON:", obj);
+                                    try {
+                                        updateConvoy(obj);
+                                    } catch (e) {
+                                        console.debug();
+                                    }
                                 } catch (e) {
+                                    console.debug();
                                     console.error("Invalid JSON:", jsonString);
                                 }
                             },

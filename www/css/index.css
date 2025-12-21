@@ -161,3 +161,13 @@ background-color: #4ea0da;
 content: '✔';
 margin-right: 5px;
 }
+
+
+.convoy-marker {
+    position: relative;
+    z-index: 9999;   /* very high value */
+  }
+
+  .mapboxgl-popup {
+    z-index: 10000 !important;  /* force popup above everything */
+  }

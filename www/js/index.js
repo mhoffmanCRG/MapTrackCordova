@@ -79,8 +79,6 @@ map.addControl(fps);
 map.flying = false;
 
 map.on('load', () => {
-;
-
 
     map.addSource('mapbox-dem', {
         'type': 'raster-dem',
@@ -205,6 +203,29 @@ map.on('load', () => {
             mapTrack = $("#TrackBtn").is(':checked');
         }
     });
+
+    map.addSource('convoy', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: []
+        }
+      });
+
+       // Add a layer to show vehicles
+    map.addLayer({
+        id: 'convoy-layer',
+        type: 'symbol',
+        source: 'convoy',
+        layout: {
+        'icon-image': 'car-15', // built-in Mapbox icon, or custom sprite
+        'icon-size': 1.2,
+        'icon-rotate': ['get', 'heading'],
+        'icon-rotation-alignment': 'map',
+        'icon-allow-overlap': true
+        }
+    }); 
+
 
 });
 
