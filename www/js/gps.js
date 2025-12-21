@@ -40,7 +40,7 @@ $(document).ready(function () {
 
     setTimeout(function () {
         if (typeof navigator.geolocation === 'object' && typeof navigator.geolocation.watchPosition === 'function') {
-            $('#myInfoL').html("Gps watchPosition..." + cnt)
+            // $('#myInfoL').html("Gps watchPosition..." + cnt)
             watchID = navigator.geolocation.watchPosition(onSuccessLocation, onErrorLocation, {enableHighAccuracy: true});
             // setInterval(function () {
             //     // console.log("get location...");

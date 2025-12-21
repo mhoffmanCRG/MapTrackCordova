@@ -144,5 +144,5 @@ function resetMarkerTimer(senderId) {
     // No packet received in 30s → dot goes red
     setCenterDotColor(senderId, 'red');
     console.log(`Marker ${senderId} timed out → dot set to red`);
-  }, 30000);
+  }, 120000);
 }
