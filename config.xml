@@ -42,7 +42,28 @@
 		<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
         <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
         <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
-	</config-file>`
+	</config-file>
+	
+
+  <config-file parent="/manifest/application/activity[@android:name='MainActivity']" target="AndroidManifest.xml">
+    <intent-filter>
+      <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+    </intent-filter>
+    <meta-data
+      android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+      android:resource="@xml/device_filter" />
+  </config-file>
+
+  <resource-file src="www/res/xml/device_filter.xml"
+                 target="app/src/main/res/xml/device_filter.xml" />
+
+  <preference name="AndroidXEnabled" value="true" />
+
+
+  <config-file target="AndroidManifest.xml" parent="/manifest">
+    <uses-feature android:name="android.hardware.usb.host" android:required="false" />
+  </config-file>
+
 </platform>
 <platform name="ios">
 	<allow-intent href="itms:*" />

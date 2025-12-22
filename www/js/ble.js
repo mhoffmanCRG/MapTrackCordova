@@ -36,7 +36,7 @@ function scanForStrongestESP(durationMs, onDone) {
     }
   }, function (error) {
     console.error("startScan error:", error);
-    $('#myInfoL').html("BLE:startScan error");
+    $('#myInfoL').html(error);
   });
 
   setTimeout(function () {
@@ -155,17 +155,8 @@ function subscribeToNotifications(deviceId) {
       // Decode ArrayBuffer -> UTF-8 JSON string
       let decoder = new TextDecoder("utf-8");
       let jsonString = decoder.decode(data);
-      try {
-        let obj = JSON.parse(jsonString);
-        console.log("Received JSON:", obj);
-        try {
-          updateConvoy(obj); // your handler
-        } catch (e) {
-          console.debug("updateConvoy handler error:", e);
-        }
-      } catch (e) {
-        console.error("Invalid JSON received:", jsonString, e);
-      }
+      jsonParser(jsonString);
+      
     },
     function (error) {
       console.error("Notification error:", error);

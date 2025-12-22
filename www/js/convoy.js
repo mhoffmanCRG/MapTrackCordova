@@ -64,7 +64,8 @@ function setCenterDotColor(senderId, color) {
 }
 
 function updateConvoy(packet) {
-  const { senderId, lat, lng } = packet;
+  const { senderId, lat, lng, linkedDevice } = packet;
+  console.log(packet)
 
   if (convoyMarkers[senderId]) {
     // Move existing marker
@@ -77,7 +78,8 @@ function updateConvoy(packet) {
     const attrs = loadAttributes(senderId);
 
     const popupContent = `
-      <div style="font-family: sans-serif; min-width:150px;">
+      <div>
+        <label>Id:${senderId} ${linkedDevice}</label><br/>
         <label>Name:</label><br/>
         <input id="name-${senderId}" type="text" value="${attrs.name}" /><br/><br/>
         <label>Color:</label><br/>
