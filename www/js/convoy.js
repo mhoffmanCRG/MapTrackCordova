@@ -79,7 +79,7 @@ function updateConvoy(packet) {
 
     const popupContent = `
       <div>
-        <label>Id:${senderId} ${linkedDevice}</label><br/>
+        <label>Id:${senderId}, Local ${linkedDevice}</label><br/>
         <label>Name:</label><br/>
         <input id="name-${senderId}" type="text" value="${attrs.name}" /><br/><br/>
         <label>Color:</label><br/>
