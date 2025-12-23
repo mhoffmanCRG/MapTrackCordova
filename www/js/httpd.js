@@ -87,7 +87,7 @@ function parseTileRequest(path) {
  */
 function getDatabaseName(path = '') {
   if (path.includes("mapbox.satellite")) return 'mapbox-satellite.db';
-  if (path.includes("mapbox.mapbox-terrain-dem-v1")) return 'mapbox-terrain.db';
+  if (path.includes("mapbox.mapbox-terrain-dem-v1")) return 'mapbox.mapbox-terrain-dem-v1.db';
   if (path.includes("mapbox.mapbox-streets-v8")) return 'mapbox.mapbox-streets-v8.db';
   return 'mapbox-satellite.db'; // default
 }
