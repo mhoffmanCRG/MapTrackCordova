@@ -110,7 +110,7 @@ function MQTTconnect() {
         options.userName = username;
         options.password = password;
     }
-    console.log("Host=" + host + ", port=" + port + ", path=" + path + " TLS = " + useTLS + " username=" + username + " password=" + password);
+ //   console.log("Host=" + host + ", port=" + port + ", path=" + path + " TLS = " + useTLS + " username=" + username + " password=" + password);
     mqtt.connect(options);
 }
 

@@ -48,16 +48,3 @@ document.addEventListener('deviceready', function() {
   });
 
 
-  function jsonParser(jsonString) {
-    try {
-        let obj = JSON.parse(jsonString);
-        console.log("Received JSON:", jsonString);
-        try {
-          updateConvoy(obj); // your handler
-        } catch (e) {
-          console.debug("updateConvoy handler error:", e);
-        }
-      } catch (e) {
-        console.error("Invalid JSON received:", jsonString, e);
-      }
-  }

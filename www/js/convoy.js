@@ -44,8 +44,6 @@ function applyMarkerColor(senderId, newColor) {
   .setPopup(popup)
   .addTo(map);
 
-
-
   // Store back
   convoyMarkers[senderId].marker = newMarker;
 }
@@ -64,12 +62,14 @@ function setCenterDotColor(senderId, color) {
 }
 
 function updateConvoy(packet) {
-  const { senderId, lat, lng, linkedDevice } = packet;
-  console.log(packet)
+  const { senderId, latitude, longitude, linkedDevice } = packet;
+  packet.receivedAt = new Date();
 
   if (convoyMarkers[senderId]) {
     // Move existing marker
-    convoyMarkers[senderId].marker.setLngLat([lng, lat]);
+    convoyMarkers[senderId].marker.setLngLat([longitude, latitude]);
+    convoyMarkers[senderId].packet = packet;
+    
 
     // Reset timer
     resetMarkerTimer(senderId);
@@ -78,13 +78,28 @@ function updateConvoy(packet) {
     const attrs = loadAttributes(senderId);
 
     const popupContent = `
-      <div>
-        <label>Id:${senderId}, Local ${linkedDevice}</label><br/>
-        <label>Name:</label><br/>
-        <input id="name-${senderId}" type="text" value="${attrs.name}" /><br/><br/>
-        <label>Color:</label><br/>
-        <input id="color-${senderId}" type="color" value="${attrs.color}" /><br/><br/>
+    <div style="font-size: 4px;" class="text-muted row">
+      <div class="col-6">${linkedDevice ? "("+senderId+")" : senderId }</div>
+      <div class="col-6" id='seen-${senderId}'></div>
       </div>
+          <div class="row">
+            <div class="col-2 px-1">
+              <input id="color-${senderId}" type="color" value="${attrs.color}" />
+            </div>
+            <div class="col-8">
+              <input id="name-${senderId}" type="text" value="${attrs.name}" />
+            </div>
+          </div>
+            <table style="font-size: 5px;" class="table table-sm table-striped">
+            <tbody>
+              <tr><td>Speed</td><td id='speed-${senderId}'></td></tr>
+              <tr><td>Heading</td><td id='head-${senderId}'></td></tr>
+              <tr><td>Lat</td><td id='lat-${senderId}'></td></tr>
+              <tr><td>Long</td><td id='lng-${senderId}'></td></tr>
+              <tr><td>Distance</td><td id='dist-${senderId}'></td></tr>
+            </tbody>
+          </table>
+          
     `;
 
     let popup = new mapboxgl.Popup({ offset: 25 })
@@ -97,11 +112,12 @@ function updateConvoy(packet) {
       pitchAlignment: 'auto',
       rotationAlignment: 'auto'
     })
-    .setLngLat([lng, lat])
+    .setLngLat([longitude, latitude])
     .setPopup(popup)
     .addTo(map);
 
     popup.on('open', function() {
+      
       // Auto-save name on type
       $(`#name-${senderId}`).off('input').on('input', function() {
         const newName = $(this).val();
@@ -112,20 +128,53 @@ function updateConvoy(packet) {
       // Live color update and auto-save
       $(`#color-${senderId}`).off('input').on('input', function() {
         const newColor = $(this).val();
-        const currentName = $(`#name-${senderId}`).val();
-  
-        console.log(senderId, newColor);
-    
+        const currentName = $(`#name-${senderId}`).val();    
         saveAttributes(senderId, { name: currentName, color: newColor });
     
         // Update marker immediately (recreate for reliability)
         applyMarkerColor(senderId, newColor);
       });
+
+      convoyMarkers[senderId].intervalInfo = setInterval(() => {
+        const now = new Date();
+        updateConvoyInfo(senderId);
+      }, 1000);
+
+      updateConvoyInfo(senderId);
     });
-    convoyMarkers[senderId] = { marker, packet, timer: null };
+
+    popup.on('close', function() {
+      // Clear info update interval
+      const entry = convoyMarkers[senderId];
+      if (entry && entry.intervalInfo) {
+        clearInterval(entry.intervalInfo);
+        entry.intervalInfo = null;
+      }
+    });
+
+    convoyMarkers[senderId] = { marker, packet, timerOrange: null, timerRed: null,  intervalInfo: null };
 
     // Start timer
     resetMarkerTimer(senderId);
+  }
+  updateConvoyInfo(senderId);
+}
+
+function updateConvoyInfo(senderId) {
+  const entry = convoyMarkers[senderId];
+  if (!entry) return;
+
+   packet = entry.packet;
+
+  // Update popup info if open
+  const popup = entry.marker.getPopup();
+  if (popup.isOpen()) {
+    $(`#speed-${senderId}`).text(`${packet.speed} km/h`);
+    $(`#head-${senderId}`).text(`${packet.heading}°`);
+    $(`#lat-${senderId}`).text(packet.latitude.toFixed(6));
+    $(`#lng-${senderId}`).text(packet.longitude.toFixed(6));
+    $(`#seen-${senderId}`).text(((new Date()) - packet.receivedAt) / 1000 );
+    $(`#dist-${senderId}`).text(getDistance(c, packet).toFixed(2) + ' km');
   }
 }
 
@@ -135,16 +184,41 @@ function resetMarkerTimer(senderId) {
   if (!entry) return;
 
   // Clear any existing timer
-  if (entry.timer) {
-    clearTimeout(entry.timer);
+  if (entry.timerRed) {
+    clearTimeout(entry.timerRed);
   }
 
   setCenterDotColor(senderId, 'white');
 
   // Start new 30s timer
-  entry.timer = setTimeout(() => {
+  entry.timerRed = setTimeout(() => {
     // No packet received in 30s → dot goes red
     setCenterDotColor(senderId, 'red');
     console.log(`Marker ${senderId} timed out → dot set to red`);
-  }, 120000);
+  }, 30000);
+}
+
+
+function jsonParser(jsonString) {
+  try {
+      let obj = JSON.parse(jsonString);
+    //  console.log("Received JSON:", jsonString);
+      try {
+        updateConvoy(obj); // your handler
+      } catch (e) {
+        console.debug("updateConvoy handler error:", e);
+      }
+    } catch (e) {
+      console.error("Invalid JSON received:", jsonString, e);
+    }
+}
+
+
+function whiteToRed(pct) {
+  const p = Math.max(0, Math.min(100, pct)) / 100; // clamp 0–100, normalize 0–1
+  const r = 255;                     // red channel stays max
+  const g = Math.round(255 * (1 - p)); // green decreases
+  const b = Math.round(255 * (1 - p)); // blue decreases
+  const hex = (x) => x.toString(16).padStart(2, '0');
+  return `#${hex(r)}${hex(g)}${hex(b)}`;
 }

@@ -2,7 +2,7 @@ var watchID = 0;
 var CompassHead = 0;
 let info = '';
 let mapTrack = true;
-let northUp = true;
+let northUp = false;
 let longitude = 0;
 let latitude = 0;
 let heading = 0;
@@ -97,13 +97,13 @@ function onErrorLocation(e) {
 function onSuccessLocation(position) {
     // console.log("onSuccessLocation", position, JSON.stringify(position));
 
-var distance = getDistance(c,position.coords);
-  //  console.log("Distance: ",distance);
+    var distance = getDistance(c,position.coords);
+    console.log("Distance: ",distance);
     
     c = position.coords;
     c.ms = (new Date()).getTime();
 
-    $('#speed').html(c.speed.toFixed(2));
+    $('#speed').html((c.speed * 3.6).toFixed(2));
     $('#lat').html(c.latitude.toFixed(5));
     $('#lng').html(c.longitude.toFixed(5));
 
@@ -145,7 +145,7 @@ function getDistance(c1, c2) {
 
 
 function getTopOfset(){
-      if (northUp) {
+      if (!northUp) {
         topOfset = $(map.getCanvas()).height() * .8;
     } else {
         topOfset = 0;
@@ -157,7 +157,7 @@ function flyToLocation(c) {
     // console.log(c);
     let bearing = northUp?c.heading:null;
     
-    if (isNaN(c.heading) || c.speed < 0.1 ) {
+    if (isNaN(c.heading) || c.speed < 3.6 ) {
         // console.log("isNaN(c.heading)");
         map.flyTo({
             center: c.center,
