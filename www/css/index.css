@@ -171,3 +171,12 @@ margin-right: 5px;
   .mapboxgl-popup {
     z-index: 10000 !important;  /* force popup above everything */
   }
+
+
+.my-div {
+    border: 1px solid #000; /* thickness | style | color */
+  }
+.my-div:focus {
+    border: 2px solid #00F; /* thickness | style | color */
+    outline: none;
+}  

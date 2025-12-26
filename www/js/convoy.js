@@ -62,8 +62,15 @@ function setCenterDotColor(senderId, color) {
 }
 
 function updateConvoy(packet) {
-  const { senderId, latitude, longitude, linkedDevice } = packet;
+  const { senderId, latitude, longitude, linkedDevice, valid } = packet;
   packet.receivedAt = new Date();
+
+  console.log("Convoy packet:", packet);
+
+  if(linkedDevice || !valid) {
+    console.log(`Packet from linked device ${senderId}`);
+    return;
+  }
 
   if (convoyMarkers[senderId]) {
     // Move existing marker
@@ -78,7 +85,7 @@ function updateConvoy(packet) {
     const attrs = loadAttributes(senderId);
 
     const popupContent = `
-    <div style="font-size: 4px;" class="text-muted row">
+    <div class="text-muted row">
       <div class="col-6">${linkedDevice ? "("+senderId+")" : senderId }</div>
       <div class="col-6" id='seen-${senderId}'></div>
       </div>
@@ -86,11 +93,15 @@ function updateConvoy(packet) {
             <div class="col-2 px-1">
               <input id="color-${senderId}" type="color" value="${attrs.color}" />
             </div>
-            <div class="col-8">
-              <input id="name-${senderId}" type="text" value="${attrs.name}" />
+            <div class="col-1">
+            </div>
+            <div class="col">
+              <div  id="name-${senderId}" class="editable my-div" contenteditable="true">
+              ${attrs.name}
+              </div>
             </div>
           </div>
-            <table style="font-size: 5px;" class="table table-sm table-striped">
+            <table class="table table-sm table-striped">
             <tbody>
               <tr><td>Speed</td><td id='speed-${senderId}'></td></tr>
               <tr><td>Heading</td><td id='head-${senderId}'></td></tr>
@@ -173,7 +184,7 @@ function updateConvoyInfo(senderId) {
     $(`#head-${senderId}`).text(`${packet.heading}°`);
     $(`#lat-${senderId}`).text(packet.latitude.toFixed(6));
     $(`#lng-${senderId}`).text(packet.longitude.toFixed(6));
-    $(`#seen-${senderId}`).text(((new Date()) - packet.receivedAt) / 1000 );
+    $(`#seen-${senderId}`).text((((new Date()) - packet.receivedAt) / 1000 ).toFixed(0) + ' s ago');
     $(`#dist-${senderId}`).text(getDistance(c, packet).toFixed(2) + ' km');
   }
 }
