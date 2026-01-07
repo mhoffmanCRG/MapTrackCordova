@@ -122,7 +122,8 @@ top: 10px;
 left: 10px;
 z-index: 1;
 border-radius: 3px;
-max-width: 20%;
+max-width: 60%;
+/* width: 60%; */
 color: #fff;
 }
  
@@ -165,7 +166,7 @@ margin-right: 5px;
 
 .convoy-marker {
     position: relative;
-    z-index: 9999;   /* very high value */
+    z-index: 999;   /* very high value */
   }
 
   .mapboxgl-popup {
@@ -180,3 +181,9 @@ margin-right: 5px;
     border: 2px solid #00F; /* thickness | style | color */
     outline: none;
 }  
+
+#myInfoUSB { max-width: 200px; /* cap the line length */ 
+    width: 100%; /* responsive within parent */ 
+    white-space: normal; /* allow wrapping */ 
+    overflow-wrap: break-word; /* wrap long words/URLs */ 
+    word-break: break-word; /* fallback for some browsers */ }

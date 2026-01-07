@@ -38,19 +38,53 @@
         <nav id="listing-group" class="listing-group">
             <!-- <button type="button" id="mapFolderBtn" class="btn btn-light">MapFolder</button>
             <div id="mapFolders"></div> -->
-            <input type="checkbox" id="NorthBtn">
-            <label for="NorthBtn">North</label>
-            <input type="checkbox" id="TrackBtn" checked="checked">
-            <label for="TrackBtn">Track</label>
+            <div class="row">
+                    <div class="col">
+                        <input type="checkbox" id="NorthBtn">
+                        <label for="NorthBtn">North</label>
+                    </div>
+                    <div class="col">
+                        <input type="checkbox" id="TrackBtn" checked="checked">
+                        <label for="TrackBtn">Track</label>
+                    </div>
+            </div>
             <!-- <input type="checkbox" id="TileBtn" checked="checked">
             <label for="TileBtn">Tile</label> -->
-            <div id="speed"></div>
+            <table class="table table-secondary table-sm">
+                <tr>
+                    <th>Spd</th>
+                    <th>Lat</th>
+                    <th>Lng</th>
+                    <th>Dev</th>
+                </tr>
+                <tr>
+                    <td><div id="speed"></div></td>
+                    <td><div id="lat"></div></td>
+                    <td><div id="lng"></div></td>
+                    <td><div id="dev"></div></td>
+                </tr>
+            </table>
+            <!-- <div id="speed"></div>
             <div id="lat"></div>
-            <div id="lng"></div>
-            <div id="myInfoL"></div>
-            <div id="myInfoUSB"></div>
+            <div id="lng"></div> -->
+            <!-- <div id="myInfoL"></div> -->
+            
+            <table id="convoyTable" class="table table-secondary table-sm">
+                <thead>
+                <tr>
+                    <th>Dev</th>
+                    <th>Lat</th>
+                    <th>Lng</th>
+                    <th>RSS</th>
+                    <th>Snr</th>
+                    <th>Dis</th>
+                    <th>Val</th>
+                </tr>
+                </thead>
+                <tbody id="convoyTableData"></tbody>
+            </table>
+            <!-- <div id="myInfoUSB"></div> -->
         </nav>
-        
     </body>
     <script src="js/index.js"></script>
 </html>

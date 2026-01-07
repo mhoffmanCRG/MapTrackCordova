@@ -103,9 +103,9 @@ function onSuccessLocation(position) {
     c = position.coords;
     c.ms = (new Date()).getTime();
 
-    $('#speed').html((c.speed * 3.6).toFixed(2));
-    $('#lat').html(c.latitude.toFixed(5));
-    $('#lng').html(c.longitude.toFixed(5));
+    $('#speed').html((c.speed * 3.6).toFixed(0));
+    $('#lat').html(c.latitude.toFixed(3));
+    $('#lng').html(c.longitude.toFixed(3));
 
     //Estimate based on speed and direction
     c = getProjectedPoint(c);
@@ -145,8 +145,9 @@ function getDistance(c1, c2) {
 
 
 function getTopOfset(){
-      if (!northUp) {
+      if (northUp) {
         topOfset = $(map.getCanvas()).height() * .8;
+        topOfset = 0;
     } else {
         topOfset = 0;
     }  

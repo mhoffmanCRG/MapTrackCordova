@@ -99,6 +99,7 @@ function connectStrongestESP(onConnected) {
 
       ble.connect(targetId, function (peripheral) {
         $('#myInfoL').html(`${targetId}`);
+        $('#dev').html(`${targetId}`);
         console.log("Connected to", targetId);
         connectedDeviceId = targetId;
         connecting = false;

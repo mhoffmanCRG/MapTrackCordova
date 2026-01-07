@@ -44,6 +44,9 @@ function applyMarkerColor(senderId, newColor) {
   .setPopup(popup)
   .addTo(map);
 
+  // Set z-index
+  newMarker.getElement().style.zIndex = '1000';
+
   // Store back
   convoyMarkers[senderId].marker = newMarker;
 }
@@ -67,17 +70,20 @@ function updateConvoy(packet) {
 
   console.log("Convoy packet:", packet);
 
-  if(linkedDevice || !valid) {
+  //if(linkedDevice || !valid) {
+    if(linkedDevice) {
     console.log(`Packet from linked device ${senderId}`);
     return;
   }
 
   if (convoyMarkers[senderId]) {
     // Move existing marker
-    convoyMarkers[senderId].marker.setLngLat([longitude, latitude]);
+
+    if(valid) {
+      convoyMarkers[senderId].marker.setLngLat([longitude, latitude]);
+    }
     convoyMarkers[senderId].packet = packet;
     
-
     // Reset timer
     resetMarkerTimer(senderId);
   } else {
@@ -108,6 +114,8 @@ function updateConvoy(packet) {
               <tr><td>Lat</td><td id='lat-${senderId}'></td></tr>
               <tr><td>Long</td><td id='lng-${senderId}'></td></tr>
               <tr><td>Distance</td><td id='dist-${senderId}'></td></tr>
+              <tr><td>rssi</td><td id='rssi-${senderId}'></td></tr>
+              <tr><td>snr</td><td id='snr-${senderId}'></td></tr>
             </tbody>
           </table>
           
@@ -130,11 +138,21 @@ function updateConvoy(packet) {
     popup.on('open', function() {
       
       // Auto-save name on type
-      $(`#name-${senderId}`).off('input').on('input', function() {
-        const newName = $(this).val();
+      $(`#name-${senderId}`).on('keyup', function(){
+        $('#myInfoUSB').html("changed");
+        console.log($(this).html());
+     
+        const newName = $(this).html();
+        $('#myInfoUSB').html("changed");
         const currentColor = $(`#color-${senderId}`).val();
         saveAttributes(senderId, { name: newName, color: currentColor });
       });
+
+      // $(`#name-${senderId}`).off('input').on('input', function() {
+      //   const newName = $(this).val();
+      //   const currentColor = $(`#color-${senderId}`).val();
+      //   saveAttributes(senderId, { name: newName, color: currentColor });
+      // });
     
       // Live color update and auto-save
       $(`#color-${senderId}`).off('input').on('input', function() {
@@ -169,6 +187,22 @@ function updateConvoy(packet) {
     resetMarkerTimer(senderId);
   }
   updateConvoyInfo(senderId);
+
+  const attrs = loadAttributes(senderId);
+    $(`#convoyTableData`).prepend(`
+    <tr>
+      <td>${attrs.name}</td>
+      <td>${packet.latitude.toFixed(4)}</td>
+      <td>${packet.longitude.toFixed(4)}</td>
+      <td>${packet.rssi.toFixed(1)}</td>
+      <td>${packet.snr.toFixed(1)}</td>
+      <td>${getDistance(c, packet).toFixed(1)}km</td>
+      <td>${packet.valid ? '✓' : '✗'}</td>
+    </tr>
+  `);
+
+  $("#convoyTableData tr:nth-child(7)").remove();
+
 }
 
 function updateConvoyInfo(senderId) {
@@ -177,6 +211,7 @@ function updateConvoyInfo(senderId) {
 
    packet = entry.packet;
 
+  
   // Update popup info if open
   const popup = entry.marker.getPopup();
   if (popup.isOpen()) {
@@ -185,8 +220,11 @@ function updateConvoyInfo(senderId) {
     $(`#lat-${senderId}`).text(packet.latitude.toFixed(6));
     $(`#lng-${senderId}`).text(packet.longitude.toFixed(6));
     $(`#seen-${senderId}`).text((((new Date()) - packet.receivedAt) / 1000 ).toFixed(0) + ' s ago');
+    $(`#snr-${senderId}`).text(`${packet.snr.toFixed(1)}`);
+    $(`#rssi-${senderId}`).text(`${packet.rssi.toFixed(1)}`);
     $(`#dist-${senderId}`).text(getDistance(c, packet).toFixed(2) + ' km');
   }
+
 }
 
 // Reset watchdog timer for a marker

@@ -1,0 +1,2 @@
+cordova run android -- --offline
+
